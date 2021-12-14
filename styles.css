@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+div, button {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+button {
+    margin: 2px;
+    text-align: center;
+    align-items: center;
+}
+
+#main-con {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 400px;
+    border: black solid 3px;
+    border-radius: 10px;
+}
+
+#buttons-con {
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+}
+
+#result {
+    flex: 0;
+    font-size: 56px;
+    border-bottom: black solid 5px;
+}
