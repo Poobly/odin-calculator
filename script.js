@@ -12,19 +12,19 @@ buttons.forEach(button => {
 });
     
 function add(a, b) {
-    return a + b;
+    return a + b.toFixed(2);
 }
 
 function subtract(a, b) {
-    return a - b;
+    return a - b.toFixed(2);
 }
 
 function multiply(a, b) {
-    return a * b;
+    return a * b.toFixed(2);
 }
 
 function divide(a, b) {
-    return a / b;
+    return a / b.toFixed(2);
 }
 
 function clearAll(array) {
