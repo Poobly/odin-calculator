@@ -32,6 +32,9 @@ button {
 
 #result {
     flex: 0;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    padding: 0 2px;
     font-size: 56px;
     border-bottom: black solid 5px;
 }
