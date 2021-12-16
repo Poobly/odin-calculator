@@ -5,12 +5,40 @@ let isOperating = false;
 let disableD = false;
 
 buttons.forEach(button => {
+    button.addEventListener("mouseenter", lightenBackground);
+    button.addEventListener("mouseleave", darkenBackground);
+    button.addEventListener("mousedown", (e) => darkenBackground(e, 75));
+    button.addEventListener("mouseup", (e) => lightenBackground(e, 75));
     button.addEventListener("click", (e) => {
         let value = e.target.dataset.key;
         displayProcessing(value);
     });
 });
-    
+
+function darkenBackground(e, value=25) {
+    let re = /\d+/g;
+    let colour = getComputedStyle(e.target).getPropertyValue("background-color");
+    let firstColour = Number(colour.match(re)[0]);
+    let secColour = Number(colour.match(re)[1]);
+    let thirdColour = Number(colour.match(re)[2]);
+    firstColour -= value;
+    secColour -= value;
+    thirdColour -= value;
+    e.target.style.backgroundColor = `rgb( ${firstColour}, ${secColour}, ${thirdColour})`;
+}
+
+function lightenBackground(e, value=25) {
+    let re = /\d+/g;
+    let colour = getComputedStyle(e.target).getPropertyValue("background-color");
+    let firstColour = Number(colour.match(re)[0]);
+    let secColour = Number(colour.match(re)[1]);
+    let thirdColour = Number(colour.match(re)[2]);
+    firstColour += value;
+    secColour += value;
+    thirdColour += value;
+    e.target.style.backgroundColor = `rgb( ${firstColour}, ${secColour}, ${thirdColour})`;
+}
+
 function add(a, b) {
     return a + b.toFixed(2);
 }
@@ -84,7 +112,7 @@ function ifDecimal(array) {
 
 function displayProcessing(value) {
     let displayValue
-    // if input 0 and larger than 0
+
     if (Number(display[0]) === 0 && Number(value) > 0 && !ifDecimal(display)) {
         display = [value];
     } 
