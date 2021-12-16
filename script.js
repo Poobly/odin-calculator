@@ -3,12 +3,35 @@ let display = [];
 let operator = null;
 let isOperating = false;
 let disableD = false;
+let mouseDown = false;
+let activeButton;
+let pressedButton;
 
 buttons.forEach(button => {
-    button.addEventListener("mouseenter", lightenBackground);
-    button.addEventListener("mouseleave", darkenBackground);
-    button.addEventListener("mousedown", (e) => darkenBackground(e, 75));
-    button.addEventListener("mouseup", (e) => lightenBackground(e, 75));
+    button.addEventListener("mouseenter", (e) => {
+        activeButton = e.target;
+        lightenBackground(e);
+    });
+
+    button.addEventListener("mouseleave", (e) => {
+        darkenBackground(e);
+        if (mouseDown && activeButton === pressedButton) {
+            lightenBackground(e, 75);
+            mouseDown = false;
+        }
+    });
+
+    button.addEventListener("mousedown", (e) => {
+        pressedButton = e.target;
+        mouseDown = true;
+        darkenBackground(e, 75)
+    });
+
+    button.addEventListener("mouseup", (e) => {
+        mouseDown = false;
+        if (activeButton === pressedButton) lightenBackground(e, 75);
+    });
+    
     button.addEventListener("click", (e) => {
         let value = e.target.dataset.key;
         displayProcessing(value);
@@ -21,10 +44,12 @@ function darkenBackground(e, value=25) {
     let firstColour = Number(colour.match(re)[0]);
     let secColour = Number(colour.match(re)[1]);
     let thirdColour = Number(colour.match(re)[2]);
+    // console.log(thirdColour);
     firstColour -= value;
     secColour -= value;
     thirdColour -= value;
     e.target.style.backgroundColor = `rgb( ${firstColour}, ${secColour}, ${thirdColour})`;
+    console.log(e.target.style.backgroundColor);
 }
 
 function lightenBackground(e, value=25) {
@@ -33,10 +58,12 @@ function lightenBackground(e, value=25) {
     let firstColour = Number(colour.match(re)[0]);
     let secColour = Number(colour.match(re)[1]);
     let thirdColour = Number(colour.match(re)[2]);
+    // console.log(thirdColour);
     firstColour += value;
     secColour += value;
     thirdColour += value;
     e.target.style.backgroundColor = `rgb( ${firstColour}, ${secColour}, ${thirdColour})`;
+    console.log(e.target.style.backgroundColor);
 }
 
 function add(a, b) {
