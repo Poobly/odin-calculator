@@ -7,10 +7,36 @@ let disableD = false;
 buttons.forEach(button => {
     button.addEventListener("click", (e) => {
         let value = e.target.value;
-        displayProcessing(value);
+        assignValue(value);
     });
 });
 
+window.addEventListener("keydown", (e) => {
+    
+    // document.querySelector(`.key[data-key="${e.keyCode}"]`)
+    value = document.querySelector(`button[data-key="${e.key}"]`).value;
+    assignValue(value);
+});
+
+function assignValue(value) {
+    switch(value) {
+        case value.replace(/\D/, ""):
+            console.log(value);
+            break;
+        case "clear":
+            console.log(value);
+            break;
+        case "clearall":
+            console.log(value);
+            break;
+        case ".":
+            console.log(value);
+            break;
+        case value.replace(/\W\D[.]/, ""):
+            console.log(value);
+            break;
+    }
+}
 
 function add(a, b) {
     return a + b.toFixed(2);
