@@ -18,6 +18,7 @@ button {
     font-weight: 700;
     font-size: 24px;
     user-select: none;
+    background-color: hsl(var(--hue), var(--saturation), var(--lightness));
 }
 
 button, #main-con {
@@ -49,17 +50,34 @@ button, #main-con {
 }
 
 .numbers {
-    background-color: rgb(150, 150, 150);
+    --hue: 0;
+    --saturation: 0%;
+    --lightness: 60%;
+
 }
 
 .equals {
-    background-color: rgb(0, 0, 255);
+    --hue: 240;
+    --saturation: 100%;
+    --lightness: 50%;
 }
 
 .operators {
-    background-color: rgb(75, 75, 75);
+    --hue: 0;
+    --saturation: 0%;
+    --lightness: 30%;
 }
 
 .clear {
-    background-color: rgb(75, 75, 75);
+    --hue: 0;
+    --saturation: 0%;
+    --lightness: 30%;
+}
+
+button:hover {
+    background-color: hsl(var(--hue), var(--saturation), calc(var(--lightness) + 10%));
+}
+
+button:active {
+    background-color: hsl(var(--hue), var(--saturation), calc(var(--lightness) - 25%));
 }
