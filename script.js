@@ -1,8 +1,9 @@
 const buttons = document.querySelectorAll("#buttons-con > div > button");
 let display = [];
-let operator = null;
 let isOperating = false;
 let disableD = false;
+let operating = false;
+let calculator = {};
 
 buttons.forEach(button => {
     button.addEventListener("click", (e) => {
@@ -21,37 +22,90 @@ window.addEventListener("keydown", (e) => {
 function assignValue(value) {
     switch(value) {
         case value.replace(/\D/, ""):
-            console.log(value);
+            console.log("num");
+            if (display[0] == 0 && display[1] != ".") {
+                display = [value];
+            }
+            else {
+                display.push(value);
+            }
             break;
         case "clear":
-            console.log(value);
+            console.log("clear");
+            display.pop();
             break;
         case "clearall":
-            console.log(value);
+            console.log("clearall")
+            display = [0];
+            calculator = {};
+            operating = false;
             break;
         case ".":
-            console.log(value);
+            console.log("period");
+            if (!display.includes(".")) {
+                display.push(value);
+            }
             break;
-        case value.replace(/\W\D[.]/, ""):
-            console.log(value);
+        case getOperator(value):
+            console.log("operator");
+            display.push(value);
+            if (operating) {
+                console.log("dfs")
+                calculator.opIndex = display.indexOf(getOperator(calculator.operator));
+                calculator.numTwo = getNum(calculator.opIndex + 1, display.length - 1);
+                display = [operate(calculator.operator, calculator.numOne, calculator.numTwo), value];
+                calculator.numOne = operate(calculator.operator, calculator.numOne, calculator.numTwo);
+                calculator.operator = value;
+            }
+            else {                
+                console.log("op")
+                calculator.operator = value;
+                calculator.opIndex = display.indexOf(getOperator(calculator.operator));
+                calculator.numOne = getNum(0, calculator.opIndex);
+                operating = true;
+            }
+            break;
+        case "=":
+            console.log("equals");
+            operating = false;
+            console.log(calculator)
+            if (calculator.numOne) {
+                calculator.numTwo = getNum(calculator.opIndex + 1, display.length);
+                // console.log(calculator.opIndex)
+                // console.log(calculator.operator);
+                // console.log(calculator.numOne);
+                // console.log(calculator.numTwo);
+                display = [operate(calculator.operator, calculator.numOne, calculator.numTwo)]
+            }
+            else if (display[0] > 0) {
+                break;
+            }
+            else {
+                display = ["0"];
+            }
             break;
     }
+    displayResults(display)
+}
+
+function getNum(start, end) {
+    return num = display.slice(start, end).join("");
 }
 
 function add(a, b) {
-    return a + b.toFixed(2);
+    return a + b;
 }
 
 function subtract(a, b) {
-    return a - b.toFixed(2);
+    return a - b;
 }
 
 function multiply(a, b) {
-    return a * b.toFixed(2);
+    return a * b;
 }
 
 function divide(a, b) {
-    return a / b.toFixed(2);
+    return a / b;
 }
 
 function clearAll(array) {
@@ -63,6 +117,8 @@ function clear(displayValue) {
 }
 
 function operate(operator, numOne, numTwo) {
+    numOne = Number(numOne);
+    numTwo = Number(numTwo);
     switch(operator) {
         case "+":
             return add(numOne, numTwo);
@@ -78,17 +134,17 @@ function operate(operator, numOne, numTwo) {
 function getOperator(value) {
     switch(value) {
         case "+":
-            operator = "+";
-            return true;
+            value = "+";
+            return value;
         case "−":       
-            operator = "−";
-            return true;
+            value = "−";
+            return value;
         case "×":
-            operator = "×";
-            return true;
+            value = "×";
+            return value;
         case "÷":
-            operator = "÷";
-            return true;
+            value = "÷";
+            return value;
     }
     return false;
 }
@@ -102,9 +158,7 @@ function ifDecimal(array) {
 }
 
 
-function displayResults() {
-    const result = document.querySelector("#result");
-    result.textContent = display.join("");
-
-
+function displayResults(result) {
+    const resultWindow = document.querySelector("#result");
+    resultWindow.textContent = result.join("");
 }
