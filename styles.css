@@ -44,9 +44,10 @@ button, #main-con {
     flex: 0;
     flex-wrap: nowrap;
     justify-content: flex-end;
-    padding: 0 10px;
-    font-size: 56px;
+    padding: 0 15px;
+    font-size: 58px;
     border-bottom: rgb(0, 255, 255) solid 3px;
+    font-family: Arial;
 }
 
 .numbers {
