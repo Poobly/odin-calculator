@@ -1,5 +1,5 @@
 const buttons = document.querySelectorAll("#buttons-con > div > button");
-let display = [];
+let display = [0];
 let isOperating = false;
 let disableD = false;
 let operating = false;
@@ -23,7 +23,7 @@ function assignValue(value) {
     switch(value) {
         case value.replace(/\D/, ""):
             console.log("num");
-            if (display[0] == 0 && display[1] != ".") {
+            if (display[0] == 0 && display[1] != "." && display.length <= 1) {
                 display = [value];
             }
             else {
@@ -32,7 +32,19 @@ function assignValue(value) {
             break;
         case "clear":
             console.log("clear");
+            console.log(display[display.length - 1]);
+            // check if operator.
+            if (display[display.length - 1] == getOperator(display[display.length - 1])) {
+                console.log("orange");
+                operating = false;
+            }
             display.pop();
+            // check if array would be empty with remove
+            if (display.length < 1) {
+                display = [0];
+                calculator = {};
+                operating = false;
+            }
             break;
         case "clearall":
             console.log("clearall")
@@ -42,42 +54,69 @@ function assignValue(value) {
             break;
         case ".":
             console.log("period");
-            if (!display.includes(".")) {
-                display.push(value);
+            // if display doesn't already include peroid add it.
+            if (!display.includes(".") || !display.includes(".", calculator.numOne.length)) {
+                if (display[0] == 0 && display.length <= 1) {
+                    display = [value];
+                }
+                else {
+                    display.push(value);
+                }
             }
             break;
+        // bug: first value as operator (only - should be allowed first)
         case getOperator(value):
             console.log("operator");
-            display.push(value);
-            if (operating) {
-                console.log("dfs")
+            console.log(display[display.length - 1])
+            console.log(!comparePrevOps());
+            // checks if already is operating and compares with previous value if operator.
+            if (operating && !comparePrevOps()) {
+                console.log("32")
+                display.push(value);
                 calculator.opIndex = display.indexOf(getOperator(calculator.operator));
                 calculator.numTwo = getNum(calculator.opIndex + 1, display.length - 1);
                 display = [operate(calculator.operator, calculator.numOne, calculator.numTwo), value];
                 calculator.numOne = operate(calculator.operator, calculator.numOne, calculator.numTwo);
                 calculator.operator = value;
             }
-            else {                
+            else if (display.length <= 1 && display[0] == 0 && value == "−") {
+                display = ["-"];
+            }
+            // compares with previous value if operator.
+            else if (!comparePrevOps()) {
                 console.log("op")
+                display.push(value);
                 calculator.operator = value;
                 calculator.opIndex = display.indexOf(getOperator(calculator.operator));
                 calculator.numOne = getNum(0, calculator.opIndex);
                 operating = true;
             }
+            else if (display[0] !== getOperator(display[0])){
+                console.log("yolo")
+                display[display.length - 1] = value;
+                calculator.operator = value;
+            }
+
+            else {
+                display.push(value);
+                calculator.operator = value;
+            }
             break;
+        // bug :
         case "=":
             console.log("equals");
-            operating = false;
-            console.log(calculator)
-            if (calculator.numOne) {
+            console.log(typeof(calculator.numOne))
+            if (typeof(calculator.numOne) !== typeof(undefined) && operating) {
+                console.log("appapf");
                 calculator.numTwo = getNum(calculator.opIndex + 1, display.length);
                 // console.log(calculator.opIndex)
                 // console.log(calculator.operator);
                 // console.log(calculator.numOne);
                 // console.log(calculator.numTwo);
                 display = [operate(calculator.operator, calculator.numOne, calculator.numTwo)]
+                operating = false;
             }
-            else if (display[0] > 0) {
+            else if (display[0] > 0 || display[0] < 0) {
                 break;
             }
             else {
@@ -86,6 +125,10 @@ function assignValue(value) {
             break;
     }
     displayResults(display)
+}
+
+function comparePrevOps() {
+    return display[display.length - 1] == getOperator(display[display.length - 1]);
 }
 
 function getNum(start, end) {
@@ -146,7 +189,6 @@ function getOperator(value) {
             value = "÷";
             return value;
     }
-    return false;
 }
 
 function disableDecimal(disableD, value) {
