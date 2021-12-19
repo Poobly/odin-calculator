@@ -13,8 +13,6 @@ buttons.forEach(button => {
 });
 
 window.addEventListener("keydown", (e) => {
-    
-    // document.querySelector(`.key[data-key="${e.keyCode}"]`)
     value = document.querySelector(`button[data-key="${e.key}"]`).value;
     assignValue(value);
 });
@@ -22,7 +20,6 @@ window.addEventListener("keydown", (e) => {
 function assignValue(value) {
     switch(value) {
         case value.replace(/\D/, ""):
-            console.log("num");
             if (display[0] == 0 && display[1] != "." && display.length <= 1) {
                 display = [value];
             }
@@ -31,15 +28,12 @@ function assignValue(value) {
             }
             break;
         case "clear":
-            console.log("clear");
-            console.log(display[display.length - 1]);
             // check if operator.
             if (display[display.length - 1] == getOperator(display[display.length - 1])) {
-                console.log("orange");
                 operating = false;
             }
             display.pop();
-            // check if array would be empty with remove
+            // check if array would be empty with remove.
             if (display.length < 1) {
                 display = [0];
                 calculator = {};
@@ -47,14 +41,13 @@ function assignValue(value) {
             }
             break;
         case "clearall":
-            console.log("clearall")
             display = [0];
             calculator = {};
             operating = false;
             break;
         case ".":
             console.log("period");
-            // if display doesn't already include peroid add it.
+            // if display doesn't already include period add it.
             if (!display.includes(".") || !display.includes(".", calculator.numOne.length)) {
                 if (display[0] == 0 && display.length <= 1) {
                     display = [value];
@@ -66,53 +59,42 @@ function assignValue(value) {
             break;
         // bug: first value as operator (only - should be allowed first)
         case getOperator(value):
-            console.log("operator");
-            console.log(display[display.length - 1])
-            console.log(!comparePrevOps());
-            // checks if already is operating and compares with previous value if operator.
-            if (operating && !comparePrevOps()) {
-                console.log("32")
-                display.push(value);
-                calculator.opIndex = display.indexOf(getOperator(calculator.operator));
-                calculator.numTwo = getNum(calculator.opIndex + 1, display.length - 1);
-                display = [operate(calculator.operator, calculator.numOne, calculator.numTwo), value];
-                calculator.numOne = operate(calculator.operator, calculator.numOne, calculator.numTwo);
-                calculator.operator = value;
-            }
-            else if (display.length <= 1 && display[0] == 0 && value == "−") {
-                display = ["-"];
-            }
-            // compares with previous value if operator.
-            else if (!comparePrevOps()) {
-                console.log("op")
-                display.push(value);
-                calculator.operator = value;
-                calculator.opIndex = display.indexOf(getOperator(calculator.operator));
-                calculator.numOne = getNum(0, calculator.opIndex);
-                operating = true;
-            }
-            else if (display[0] !== getOperator(display[0])){
-                console.log("yolo")
-                display[display.length - 1] = value;
-                calculator.operator = value;
-            }
-
-            else {
-                display.push(value);
-                calculator.operator = value;
+            if (display[display.length - 1] != "-") {
+                // checks if already is operating and compares with previous value if operator.
+                if (operating && !comparePrevOps()) {
+                    display.push(value);
+                    calculator.opIndex = display.indexOf(getOperator(calculator.operator));
+                    calculator.numTwo = getNum(calculator.opIndex + 1, display.length - 1);
+                    display = [operate(calculator.operator, calculator.numOne, calculator.numTwo), value];
+                    calculator.numOne = operate(calculator.operator, calculator.numOne, calculator.numTwo);
+                    calculator.operator = value;
+                }
+                else if (display.length <= 1 && display[0] == 0 && value == "−") {
+                    display = ["-"];
+                }
+                // compares with previous value if operator.
+                else if (!comparePrevOps()) {
+                    display.push(value);
+                    calculator.operator = value;
+                    calculator.opIndex = display.indexOf(getOperator(calculator.operator));
+                    calculator.numOne = getNum(0, calculator.opIndex);
+                    operating = true;
+                }
+                else if (display[0] !== getOperator(display[0])){
+                    display[display.length - 1] = value;
+                    calculator.operator = value;
+                }
+                
+                else {
+                    display.push(value);
+                    calculator.operator = value;
+                }
             }
             break;
-        // bug :
         case "=":
-            console.log("equals");
-            console.log(typeof(calculator.numOne))
+            // check if number one exists and calculator is currently operating.
             if (typeof(calculator.numOne) !== typeof(undefined) && operating) {
-                console.log("appapf");
                 calculator.numTwo = getNum(calculator.opIndex + 1, display.length);
-                // console.log(calculator.opIndex)
-                // console.log(calculator.operator);
-                // console.log(calculator.numOne);
-                // console.log(calculator.numTwo);
                 display = [operate(calculator.operator, calculator.numOne, calculator.numTwo)]
                 operating = false;
             }
@@ -124,6 +106,7 @@ function assignValue(value) {
             }
             break;
     }
+    if (display == "NaN") display = ["Error"];
     displayResults(display)
 }
 
@@ -164,13 +147,13 @@ function operate(operator, numOne, numTwo) {
     numTwo = Number(numTwo);
     switch(operator) {
         case "+":
-            return add(numOne, numTwo);
+            return Math.round(add(numOne, numTwo) * 100 + Number.EPSILON) / 100;
         case "−":        
-            return subtract(numOne, numTwo);
+            return Math.round(subtract(numOne, numTwo) * 100 + Number.EPSILON) / 100;
         case "×":
-            return multiply(numOne, numTwo);
+            return Math.round(multiply(numOne, numTwo) * 100 + Number.EPSILON) / 100;
         case "÷":
-            return divide(numOne, numTwo);
+            return Math.round(divide(numOne, numTwo) * 100 + Number.EPSILON) / 100;
     }
 }
 
