@@ -4,6 +4,7 @@ let isOperating = false;
 let disableD = false;
 let operating = false;
 let calculator = {};
+let operators = ["+", "−", "×", "÷"];
 
 buttons.forEach(button => {
     button.addEventListener("click", (e) => {
@@ -20,7 +21,9 @@ window.addEventListener("keydown", (e) => {
 function assignValue(value) {
     switch(value) {
         case value.replace(/\D/, ""):
-            if (display[0] == 0 && display[1] != "." && display.length <= 1) {
+            // need to add condition for result reset if u enter a value.
+            if (display[0] == 0 && display[1] != "." && display.length <= 1 
+            || !operating && typeof(calculator.numTwo) !== typeof(undefined) && !operators.some(ops => display.includes(ops))) {
                 display = [value];
             }
             else {
@@ -57,7 +60,6 @@ function assignValue(value) {
                 }
             }
             break;
-        // bug: first value as operator (only - should be allowed first)
         case getOperator(value):
             if (display[display.length - 1] != "-") {
                 // checks if already is operating and compares with previous value if operator.
